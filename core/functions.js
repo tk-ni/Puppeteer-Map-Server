@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer-extra');
 const StealthPlugin = require('puppeteer-extra-plugin-stealth');
 const { Cluster } = require('puppeteer-cluster');
+
 module.exports = {
     puppeteer: {
         createCluster: async () => {
@@ -17,7 +18,7 @@ module.exports = {
                         `--window-size=${1920},${1080}`,
                         '--no-sandbox']
                 },
-                timeout: env.puppeteer.navigationTimeout,
+                timeout: 60000,
                 retryLimit: 10,
                 retryDelay: 1000
             });

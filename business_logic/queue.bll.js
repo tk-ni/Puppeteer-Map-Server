@@ -1,7 +1,6 @@
 const dal = require('./../data_access/dal');
-const env = require('./../core/env/env');
-const Queue = require('./../models/spiders/queue.model');
-const winstonHandler = require('../handlers/winston.handler');
+const env = require('./../core/env');
+const Queue = require('./../models/queue.model');
 
 const addToQueue = (url, cb) => {
     if (url) {
@@ -34,7 +33,6 @@ const addToQueueMultiple = async (queue_arr, cb) => {
         query = query.slice(0, -1);
         dal.addOneQuery(query, (e)=>{
             if(e){
-                winstonHandler.logError(e);
                 cb(e)
             }else{
                 cb(null);

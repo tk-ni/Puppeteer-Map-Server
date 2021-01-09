@@ -6,5 +6,5 @@ const crawler = require('./crawler/crawler');
 
 app.listen(env.PORT, ()=>{
     console.log('Server listening on', env.PORT);
-    crawler.init('https://pinchofyum.com/')
+    crawler.init();
 })
