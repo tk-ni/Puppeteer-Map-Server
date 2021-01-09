@@ -7,7 +7,6 @@ module.exports = {
             password: '', //process.env.DB_PASS
             port: '3306', //process.env.DB_PORT
             database: 'puppeteer_map_db', //process.env.DB_NAME,
-            charset: 'utf8mb4_bin',
             insecureAuth: true
         },
         queueTableName: 'queue',

@@ -3,7 +3,7 @@ const dal = require("../data_access/dal")
 const Visit = require('./../models/visit.model');
 
 const addVisit = (url, links, cb) => {
-    let visit = new Visit({ url: url, date: new Date().getTime(), links: links });
+    let visit = new Visit({ url: url, date: new Date().getTime(), links: JSON.stringify(links) });
     dal.addOne(`INSERT INTO ${env.database.visitTableName} SET ?`, visit, (e) => {
         if (e) {
             cb(e)
@@ -13,15 +13,14 @@ const addVisit = (url, links, cb) => {
     })
 }
 const checkVisited = (url, cb) => {
-    dal.readOne(`SELECT * FROM ${env.database.visitTableName} WHERE url = '${url}'`, (e, data) => {
+    dal.readOne(`SELECT * FROM ${env.database.visitTableName} WHERE url = '${url}'`, (e,data) => {
         if (e) {
             cb(e)
         } else {
             if (data) {
-                let modelData = new Visit(data);
-                cb(null, modelData);
+                cb(`Already visited.`);
             } else {
-                cb(`Error: checkVisited: data undefined.`)
+                cb(null);
             }
         }
     })

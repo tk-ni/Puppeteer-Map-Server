@@ -8,7 +8,7 @@ module.exports = {
             await puppeteer.use(StealthPlugin());
             const cluster = await Cluster.launch({
                 concurrency: Cluster.CONCURRENCY_PAGE,
-                maxConcurrency: 60,
+                maxConcurrency: 3,
                 monitor: false,
                 puppeteer: puppeteer,
                 puppeteerOptions: {

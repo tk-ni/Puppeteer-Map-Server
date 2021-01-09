@@ -3,3 +3,5 @@ class Queue{
         this.url = args.url;
     }
 }
+
+module.exports = Queue;

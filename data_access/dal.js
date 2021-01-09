@@ -8,7 +8,6 @@ const database = mysql.createPool({
     port: env.database.credentials.port,
     database: env.database.credentials.database,
     insecureAuth: env.database.credentials.insecureAuth,
-    charset: env.database.credentials.charset,
     connectionLimit: 10,
     timeout: 30000,
     waitForConnections: true,

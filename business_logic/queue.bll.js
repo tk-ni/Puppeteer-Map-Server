@@ -18,28 +18,18 @@ const addToQueue = (url, cb) => {
 }
 
 const addToQueueMultiple = async (queue_arr, cb) => {
-    clearToAdd = true;
+    let query = `INSERT IGNORE INTO ${env.database.queueTableName} (url) VALUES `
     for (queue of queue_arr) {
-        if (!queue.url) {
-            clearToAdd = false;
-        }
+        query += `('${queue}'),`;
     }
-
-    if (clearToAdd) {
-        let query = `INSERT IGNORE INTO ${env.database.queueTableName} (url) VALUES `
-        for (queue of queue_arr) {
-            query += `('${queue.url}'),`;
+    query = query.slice(0, -1);
+    dal.addOneQuery(query, (e)=>{
+        if(e){
+            cb(e)
+        }else{
+            cb(null);
         }
-        query = query.slice(0, -1);
-        dal.addOneQuery(query, (e)=>{
-            if(e){
-                cb(e)
-            }else{
-                cb(null);
-            }
-        })
-
-    }
+    })
 }
 const removeFromQueue = (url, cb) => {
     if (url) {
