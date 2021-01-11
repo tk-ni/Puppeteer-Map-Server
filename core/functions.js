@@ -18,9 +18,8 @@ module.exports = {
                         `--window-size=${1920},${1080}`,
                         '--no-sandbox']
                 },
-                timeout: 60000,
-                retryLimit: 10,
-                retryDelay: 1000
+                timeout: 20000,
+                retryLimit: 0,
             });
 
             return cluster;

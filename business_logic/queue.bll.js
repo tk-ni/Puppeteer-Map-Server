@@ -2,31 +2,16 @@ const dal = require('./../data_access/dal');
 const env = require('./../core/env');
 const Queue = require('./../models/queue.model');
 
-const addToQueue = (url, cb) => {
-    if (url) {
-        let newEntry = new Queue({ url: url });
-        dal.addOne(`INSERT INTO ${env.database.queueTableName} SET ?`, newEntry, (e) => {
-            if (e) {
-                cb(e)
-            } else {
-                cb(null);
-            }
-        })
-    } else {
-        cb(`Error: queue.bll.js: addToQueue: undefined data.`)
-    }
-}
-
 const addToQueueMultiple = async (queue_arr, cb) => {
-    let query = `INSERT IGNORE INTO ${env.database.queueTableName} (url) VALUES `
+    let query = `INSERT IGNORE INTO ${env.database.queueTableName} (url,src) VALUES `
     for (queue of queue_arr) {
-        query += `('${queue}'),`;
+        query += `('${queue.url.toString()}', '${queue.src.toString()}'),`;
     }
     query = query.slice(0, -1);
-    dal.addOneQuery(query, (e)=>{
-        if(e){
+    dal.addOneQuery(query, (e) => {
+        if (e) {
             cb(e)
-        }else{
+        } else {
             cb(null);
         }
     })
@@ -45,42 +30,52 @@ const removeFromQueue = (url, cb) => {
     }
 }
 
-const getNextQueue = (cb) =>{
-    dal.readOne(`SELECT * FROM ${env.database.queueTableName} ORDER BY RAND() LIMIT 1`, (e,data)=>{
-        if(e){
+
+const getRandomQueue = (cb) => {
+    dal.readOne(`SELECT COUNT(*) FROM ${env.database.queueTableName}`, (e, count) => {
+        if (e) {
             cb(e)
-        }else{
-            if(data){
-                let next = new Queue(data);
-                cb(null,next);
-            }else{
-                cb(`Error: queue.bll.js: getNextQueue: data undefined.`);
-            }
+        } else {
+            let rnd = Math.floor(Math.random() * 300) + 200;
+            dal.readAll(`SELECT * FROM ${env.database.queueTableName} ORDER BY RAND() LIMIT ${rnd}`, (e, data) => {
+                if (e) {
+                    cb(e)
+                } else {
+                    if (data && data.length) {
+                        let modelData = data.map(queue => {
+                            return new Queue(queue);
+                        })
+                        cb(null, modelData);
+                    } else {
+                        cb(`Error: queue.bll.js: getRandomQueue: data undefined.`);
+                    }
+                }
+            })
         }
     })
+
 }
 
-const getAllQueue = (cb) =>{
-    dal.readAll(`SELECT * FROM ${env.database.queueTableName}`, (e,data)=>{
-        if(e){
+const resetQueue = (cb) => {
+    dal.readOne(`SELECT COUNT(*) FROM ${env.database.queueTableName}`, (e, count) => {
+        if (e) {
             cb(e)
-        }else{
-            if(data && data.length){
-                let modelData = data.map(queue =>{
-                    return new Queue(queue);
-                })
-                cb(null,modelData);
-            }else{
-                cb(`Error: queue.bll.js: getAllQueue: data undefined.`);
-            }
+        } else {
+            let rnd = Math.floor(Math.random() * (count['COUNT(*)'] - 1)) + 1;
+            dal.deleteAll(`DELETE FROM ${env.database.queueTableName} LIMIT ${rnd}`, (e) => {
+                if (e) {
+                    cb(e)
+                } else {
+                    cb(null);
+                }
+            })
         }
-    })
+    });
 }
 
 module.exports = {
-    addToQueue: addToQueue,
     addToQueueMultiple: addToQueueMultiple,
     removeFromQueue: removeFromQueue,
-    getNextQueue: getNextQueue,
-    getAllQueue: getAllQueue
+    getRandomQueue: getRandomQueue,
+    resetQueue: resetQueue
 }

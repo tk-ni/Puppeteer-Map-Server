@@ -3,7 +3,7 @@ class Visit{
         this.id = args.id;
         this.url = args.url;
         this.date = args.date;
-        this.links = args.links;
+        this.src = args.src;
     }
 }
 

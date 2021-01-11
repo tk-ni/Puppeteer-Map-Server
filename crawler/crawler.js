@@ -4,20 +4,15 @@ const queueBll = require('./../business_logic/queue.bll');
 const visitBll = require('./../business_logic/visit.bll');
 
 const init = () => {
-    queueBll.getAllQueue(async (e, list) => {
+    queueBll.getRandomQueue(async (e, list) => {
         if (e) {
             console.log(e);
-            setTimeout(() => {
-                init();
-            }, 600000);
         } else {
             let cluster = await functions.puppeteer.createCluster();
-            
-            for (url of list) {
-                if(url.url.startsWith('http')){
-
-                    cluster.queue(url);
-                }
+            for (queue of list) {
+                cluster.execute({url: queue.url, src: queue.src}).catch(e =>{
+                    console.log(e);
+                });
             }
             initCluster(cluster);
             await cluster.idle();
@@ -28,10 +23,6 @@ const init = () => {
 }
 
 const initCluster = async (cluster) => {
-    cluster.on('taskerror', (e) => {
-        console.log(e);
-    });
-
     cluster.task(async ({ page, data }) => {
         await new Promise((resolve, reject) => {
             visitBll.checkVisited(data.url, async (e)=>{
@@ -43,7 +34,7 @@ const initCluster = async (cluster) => {
                         await page.evaluate(() => window.stop());
                         let links = await getLinks(page);
                         if (links && links.length > 0) {
-                            visitBll.addVisit(data.url, links, (e) => {
+                            visitBll.addVisit(data.url, data.src, (e) => {
                                 if (e) {
                                     reject(e);
                                 } else {
