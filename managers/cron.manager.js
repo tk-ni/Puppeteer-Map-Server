@@ -1,8 +1,9 @@
 const cron = require('node-cron');
 const queueBll = require('../business_logic/queue.bll');
 const visitBll = require('../business_logic/visit.bll');
+const logManager = require('./log.manager');
 const initReset = () =>{
-    cron.schedule(`*/1 * * * *`, ()=>{
+    cron.schedule(`*/10 * * * *`, ()=>{
         queueBll.resetQueue((e)=>{
             if(e){
                 console.log(e)
@@ -11,7 +12,7 @@ const initReset = () =>{
                     if(e){
                         reject(e)
                     }else{
-                        console.log('RESET')
+                        logManager.logSync('Resetting database...');
                     }
                 })
             }

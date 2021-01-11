@@ -10,6 +10,7 @@ module.exports = {
             insecureAuth: true
         },
         queueTableName: 'queue',
-        visitTableName: 'visit'
+        visitTableName: 'visit',
+        logTableName: 'log'
     }
 }

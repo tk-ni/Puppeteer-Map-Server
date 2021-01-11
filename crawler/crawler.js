@@ -2,6 +2,7 @@ const functions = require('./../core/functions');
 const getLinks = require('./functions/getLinks.function');
 const queueBll = require('./../business_logic/queue.bll');
 const visitBll = require('./../business_logic/visit.bll');
+const logManager = require('./../managers/log.manager');
 
 const init = () => {
     queueBll.getRandomQueue(async (e, list) => {
@@ -11,7 +12,7 @@ const init = () => {
             let cluster = await functions.puppeteer.createCluster();
             for (queue of list) {
                 cluster.execute({url: queue.url, src: queue.src}).catch(e =>{
-                    console.log(e);
+                   logManager.logSync(e);
                 });
             }
             initCluster(cluster);
@@ -30,6 +31,7 @@ const initCluster = async (cluster) => {
                     reject(e);
                 }else{
                     try{
+                        logManager.logSync(`Fetching ${data.url}`);
                         await page.goto(data.url, { waitUntil: 'domcontentloaded' });
                         await page.evaluate(() => window.stop());
                         let links = await getLinks(page);
@@ -54,7 +56,7 @@ const initCluster = async (cluster) => {
                                 }
                             })
                         } else {
-                            reject('No links found on page.')
+                            reject(`No links found on ${data.url}`)
                         }
                     }catch(e){
                         reject(e);

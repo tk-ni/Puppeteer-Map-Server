@@ -18,7 +18,7 @@ const checkVisited = (url, cb) => {
             cb(e)
         } else {
             if (data) {
-                cb(`Already visited.`);
+                cb(`Already visited ${url}`);
             } else {
                 cb(null);
             }
