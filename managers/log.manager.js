@@ -30,8 +30,8 @@ const trimLogsSync = async () =>{
                 reject(e);
             }else{
                 let rows = count['COUNT(*)'];
-                if(rows > 100){
-                    dal.deleteAll(`DELETE FROM ${env.database.logTableName} LIMIT ${rows - 100}`, (e)=>{
+                if(rows > 1000){
+                    dal.deleteAll(`DELETE FROM ${env.database.logTableName} LIMIT ${rows - 1000}`, (e)=>{
                         if(e){
                             reject(e);
                         }else{
