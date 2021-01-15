@@ -36,8 +36,24 @@ const resetVisits = (cb) => {
     })
 }
 
+const getVisits = (cb) =>{
+    dal.readAll(`SELECT * FROM ${env.database.visitTableName}`, (e,data)=>{
+        if(e){
+            cb(e)
+        }else{
+            if(data && data.length){
+                let modelData = data.map(v => new Visit(v));
+                cb(null,modelData);
+            }else{
+                cb(`Error: getVisits: data undefined.`)
+            }
+        }
+    })
+}
+
 module.exports = {
     addVisit: addVisit,
     checkVisited: checkVisited,
-    resetVisits: resetVisits
+    resetVisits: resetVisits,
+    getVisits: getVisits
 }

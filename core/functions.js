@@ -8,11 +8,11 @@ module.exports = {
             await puppeteer.use(StealthPlugin());
             const cluster = await Cluster.launch({
                 concurrency: Cluster.CONCURRENCY_PAGE,
-                maxConcurrency: 3,
+                maxConcurrency: 10,
                 monitor: false,
                 puppeteer: puppeteer,
                 puppeteerOptions: {
-                    headless: false,
+                    headless: true,
                     defaultViewport: null,
                     args: ['--lang=en-US',
                         `--window-size=${1920},${1080}`,

@@ -4,14 +4,20 @@ const queueBll = require('./../business_logic/queue.bll');
 const visitBll = require('./../business_logic/visit.bll');
 const logManager = require('./../managers/log.manager');
 
-const init = () => {
+const init = (io) => {
     queueBll.getRandomQueue(async (e, list) => {
         if (e) {
             console.log(e);
         } else {
             let cluster = await functions.puppeteer.createCluster();
             for (queue of list) {
-                cluster.execute({url: queue.url, src: queue.src}).catch(e =>{
+                cluster.execute({url: queue.url, src: queue.src}).then(()=>{
+                    visitBll.getVisits((e,visits)=>{
+                        if(!e){
+                            io.sockets.emit('visits', visits);
+                        }
+                    })
+                }).catch(e =>{
                    logManager.logSync(e);
                 });
             }
