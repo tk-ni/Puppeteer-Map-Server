@@ -11,12 +11,8 @@ const init = (io) => {
         } else {
             let cluster = await functions.puppeteer.createCluster();
             for (queue of list) {
-                cluster.execute({url: queue.url, src: queue.src}).then(()=>{
-                    visitBll.getVisits((e,visits)=>{
-                        if(!e){
-                            io.sockets.emit('visits', visits);
-                        }
-                    })
+                cluster.execute({url: queue.url, src: queue.src}).then(async ()=>{
+                   await emitSocketData(io);
                 }).catch(e =>{
                    logManager.logSync(e);
                 });
@@ -75,6 +71,25 @@ const initCluster = async (cluster) => {
     });
 }
 
+const emitSocketData = async (io) =>{
+    return await new Promise(async(resolve,reject)=>{
+        visitBll.getVisits((e,visits)=>{
+            if(e){
+                reject(e)
+            }else{
+                logManager.getLogs((e,logs)=>{
+                    if(e){
+                        reject(e)
+                    }else{
+                        io.emit('update',[visits,logs]);
+                    }
+                })
+            }
+        })
+    })
+}
+
 module.exports = {
-    init: init
+    init: init,
+    emitSocketData: emitSocketData
 }

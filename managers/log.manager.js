@@ -1,11 +1,6 @@
 const dal = require('./../data_access/dal');
 const env = require('./../core/env');
 const Log = require('./../models/log.model');
-let logsIo = null;
-
-const init = (io) =>{
-    logsIo = io;
-}
 
 const getLogs = (cb) =>{
     dal.readAll(`SELECT * FROM ${env.database.logTableName}`, (e,data)=>{
@@ -14,6 +9,9 @@ const getLogs = (cb) =>{
         }else{
             if(data && data.length){
                 let modelData = data.map(l => new Log(l));
+                modelData = modelData.sort((a,b) =>{
+                    return a.id > b.id ? 1 : -1;
+                })
                 cb(null,modelData);
             }else{
                 cb(`Error: getLogs: data undefined.`)
@@ -32,13 +30,6 @@ const logSync = async (string) => {
                 }else{
                     try{
                         await trimLogsSync();
-                        if(logsIo){
-                            getLogs((e,logs)=>{
-                                if(!e){
-                                    logsIo.sockets.emit('logs', logs);
-                                }
-                            })
-                        }
                         resolve();
                     }catch(e){
                         reject(e);
@@ -56,8 +47,8 @@ const trimLogsSync = async () =>{
                 reject(e);
             }else{
                 let rows = count['COUNT(*)'];
-                if(rows > 200){
-                    dal.deleteAll(`DELETE FROM ${env.database.logTableName} LIMIT ${rows - 200}`, (e)=>{
+                if(rows >= 99){
+                    dal.deleteAll(`DELETE FROM ${env.database.logTableName} ORDER BY id ASC LIMIT ${10}`, (e)=>{
                         if(e){
                             reject(e);
                         }else{
@@ -73,6 +64,6 @@ const trimLogsSync = async () =>{
 
 }
 module.exports = {
-    init: init,
-    logSync:logSync
+    logSync:logSync,
+    getLogs: getLogs
 }

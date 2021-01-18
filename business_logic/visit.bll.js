@@ -3,7 +3,7 @@ const dal = require("../data_access/dal")
 const Visit = require('./../models/visit.model');
 
 const addVisit = (url, src, cb) => {
-    let visit = new Visit({ url: url, date: new Date().getTime(), src: src });
+    let visit = new Visit({ url: url, date: new Date().getTime(), src: src, vertex: JSON.stringify({x: Math.random() * -150 + 50, y: Math.random() * -150 + 50})});
     dal.addOne(`INSERT INTO ${env.database.visitTableName} SET ?`, visit, (e) => {
         if (e) {
             cb(e)
@@ -42,7 +42,10 @@ const getVisits = (cb) =>{
             cb(e)
         }else{
             if(data && data.length){
-                let modelData = data.map(v => new Visit(v));
+                let modelData = data.map(v => {
+                    v.vertex = JSON.parse(v.vertex);
+                    return new Visit(v);
+                });
                 cb(null,modelData);
             }else{
                 cb(`Error: getVisits: data undefined.`)

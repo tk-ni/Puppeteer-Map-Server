@@ -1,5 +1,6 @@
 class Log{
     constructor(args){
+        this.id = args.id;
         this.string = args.string;
     }
 }
