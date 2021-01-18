@@ -81,7 +81,9 @@ const emitSocketData = async (io) =>{
                     if(e){
                         reject(e)
                     }else{
-                        io.emit('update',[visits,logs]);
+                        if(io){
+                            io.emit('update',[visits,logs]);
+                        }
                     }
                 })
             }
