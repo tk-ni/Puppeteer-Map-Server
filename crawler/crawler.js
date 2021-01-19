@@ -73,21 +73,23 @@ const initCluster = async (cluster) => {
 
 const emitSocketData = async (io) =>{
     return await new Promise(async(resolve,reject)=>{
-        visitBll.getVisits((e,visits)=>{
-            if(e){
-                reject(e)
-            }else{
-                logManager.getLogs((e,logs)=>{
-                    if(e){
-                        reject(e)
-                    }else{
-                        if(io){
+        if(io){
+            visitBll.getVisits((e,visits)=>{
+                if(e){
+                    reject(e)
+                }else{
+                    logManager.getLogs((e,logs)=>{
+                        if(e){
+                            reject(e)
+                        }else{
                             io.emit('update',[visits,logs]);
                         }
-                    }
-                })
-            }
-        })
+                    })
+                }
+            })
+        }else{
+            reject('io undefined.');
+        }
     })
 }
 
