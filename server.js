@@ -15,8 +15,10 @@ const resetRoute = require('./routes/reset.route');
 
 app.use(cors());
 app.use('/reset', resetRoute);
-io.on('connection', async (socket) => {
-    await crawler.emitSocketData(io);
+io.on('connection', (socket) => {
+    
+    crawler.emitSocketData(io);
+
     socket.on('disconnect', ()=>{
         console.log('Socket disconnected.');
     })

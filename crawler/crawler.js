@@ -82,6 +82,7 @@ const emitSocketData = async (io) =>{
                         if(e){
                             reject(e)
                         }else{
+                            console.log('Emitted data to socket.')
                             io.emit('update',[visits,logs]);
                         }
                     })
