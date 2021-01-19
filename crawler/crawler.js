@@ -11,13 +11,7 @@ const init = (io) => {
         } else {
             let cluster = await functions.puppeteer.createCluster();
             for (queue of list) {
-                cluster.execute({url: queue.url, src: queue.src}).then(async ()=>{
-                   emitSocketData(io).then(res =>{
-                       console.log(res);
-                   }).catch(e =>{
-                       console.log(e);
-                   });
-                }).catch(e =>{
+                cluster.execute({url: queue.url, src: queue.src}).catch(e =>{
                    logManager.logSync(e);
                 });
             }

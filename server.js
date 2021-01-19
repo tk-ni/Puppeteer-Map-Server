@@ -16,14 +16,17 @@ const resetRoute = require('./routes/reset.route');
 app.use(cors());
 app.use('/reset', resetRoute);
 io.on('connection', (socket) => {
-    
-    crawler.emitSocketData(io).then(res =>{
-        console.log(res);
-    }).catch(e =>{
-        console.log(e);
-    });
+    let tmr = setInterval(()=>{
+        crawler.emitSocketData(io).then(res =>{
+            console.log(res);
+        }).catch(e =>{
+            console.log(e);
+        });
+    },500);
+
     socket.on('disconnect', ()=>{
         console.log('Socket disconnected.');
+        clearInterval(tmr);
     })
 });
 
