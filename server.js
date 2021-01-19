@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const http = require('http').Server(app);
+const cors = require('cors');
 const io = require('socket.io')(http,{
     cors: {
       origin: '*',
@@ -12,12 +13,11 @@ const crawler = require('./crawler/crawler');
 const cronManager = require('./managers/cron.manager');
 const resetRoute = require('./routes/reset.route');
 
+app.use(cors());
 app.use('/reset', resetRoute);
 io.on('connection', async () => {
     await crawler.emitSocketData(io);
 });
-
-
 
 http.listen(env.PORT, () => {
     console.log('Server listening on', env.PORT);
