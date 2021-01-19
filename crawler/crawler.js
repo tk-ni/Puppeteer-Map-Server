@@ -14,6 +14,8 @@ const init = (io) => {
                 cluster.execute({url: queue.url, src: queue.src}).then(async ()=>{
                    emitSocketData(io).then(res =>{
                        console.log(res);
+                   }).catch(e =>{
+                       console.log(e);
                    });
                 }).catch(e =>{
                    logManager.logSync(e);

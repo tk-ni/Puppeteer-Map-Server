@@ -19,6 +19,8 @@ io.on('connection', (socket) => {
     
     crawler.emitSocketData(io).then(res =>{
         console.log(res);
+    }).catch(e =>{
+        console.log(e);
     });
     socket.on('disconnect', ()=>{
         console.log('Socket disconnected.');
