@@ -3,7 +3,7 @@ const queueBll = require('../business_logic/queue.bll');
 const visitBll = require('../business_logic/visit.bll');
 const logManager = require('./log.manager');
 const initReset = () =>{
-    cron.schedule(`*/3 * * * *`, ()=>{
+    cron.schedule(`*/2 * * * *`, ()=>{
         queueBll.resetQueue((e)=>{
             if(e){
                 console.log(e)

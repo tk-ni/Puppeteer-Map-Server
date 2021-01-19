@@ -10,7 +10,9 @@ const io = require('socket.io')(http,{
 const env = require('./core/env');
 const crawler = require('./crawler/crawler');
 const cronManager = require('./managers/cron.manager');
+const resetRoute = require('./routes/reset.route');
 
+app.use('/reset', resetRoute);
 io.on('connection', async () => {
     await crawler.emitSocketData(io);
 });
