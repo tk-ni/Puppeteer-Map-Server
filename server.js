@@ -17,8 +17,9 @@ app.use(cors());
 app.use('/reset', resetRoute);
 io.on('connection', (socket) => {
     
-    crawler.emitSocketData(io);
-
+    crawler.emitSocketData(io).then(res =>{
+        console.log(res);
+    });
     socket.on('disconnect', ()=>{
         console.log('Socket disconnected.');
     })
