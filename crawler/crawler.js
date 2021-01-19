@@ -77,7 +77,7 @@ const initCluster = async (cluster) => {
 
 const emitSocketData = async (io) =>{
     return await new Promise(async(resolve,reject)=>{
-        if(io && Object.keys(io.sockets.sockets).length > 0){
+        if(io && io.sockets.sockets.size > 0){
             visitBll.getVisits((e,visits)=>{
                 if(e){
                     reject(e)
@@ -87,7 +87,7 @@ const emitSocketData = async (io) =>{
                             reject(e)
                         }else{
                             io.emit('update',[visits,logs]);
-                            resolve('Emitted data to sockets.');
+                            resolve(`Emitted data to ${io.sockets.sockets.size} sockets.`);
                         }
                     })
                 }
