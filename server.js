@@ -15,6 +15,7 @@ const resetRoute = require('./routes/reset.route');
 
 app.use(cors());
 app.use('/reset', resetRoute);
+
 io.on('connection', async (socket) => {
     await crawler.emitSocketData(io).catch(e =>{
         console.log(e);
