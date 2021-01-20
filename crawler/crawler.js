@@ -4,7 +4,7 @@ const queueBll = require('./../business_logic/queue.bll');
 const visitBll = require('./../business_logic/visit.bll');
 const logManager = require('./../managers/log.manager');
 
-const init = (io) => {
+const init = () => {
     queueBll.getRandomQueue(async (e, list) => {
         if (e) {
             console.log(e);

@@ -33,6 +33,6 @@ io.on('connection', async (socket) => {
 
 http.listen(env.PORT, () => {
     console.log('Server listening on', env.PORT);
-    crawler.init(io);
+    crawler.init();
     cronManager.initReset();
 })
